@@ -29,11 +29,9 @@ advised to halt all running jobs and DAG runs.
 
 Database schema must match.
 
-Note that this script is made for Airflow 2.7.3 and is provided without any warranty.
+Note that this script is made for Airflow 2.7.x and 2.8.0 and is provided without any warranty.
 """
 
-# TODO test 2.7.3
-# TODO docs
 from __future__ import annotations
 
 import argparse
@@ -44,7 +42,12 @@ import subprocess
 from sqlalchemy import create_engine, delete, select, text
 from sqlalchemy.orm import Session
 
-from airflow.auth.managers.fab.models import Action, Permission, RegisterUser, Resource, Role, User
+try:
+    # Airflow 2.8.x
+    from airflow.providers.fab.auth_manager.models import Action, Permission, RegisterUser, Resource, Role, User
+except ImportError:
+    # Airflow 2.7.x
+    from airflow.auth.managers.fab.models import Action, Permission, RegisterUser, Resource, Role, User
 from airflow.jobs.job import Job
 from airflow.models.connection import Connection
 from airflow.models.dag import DagModel, DagOwnerAttributes, DagTag
@@ -81,7 +84,8 @@ airflow_db_url = engine.url
 temp_db_url = "sqlite:///migration.db"
 supported_db_versions = [
     # see https://airflow.apache.org/docs/apache-airflow/stable/migrations-ref.html
-    "405de8318b3a"  # Airflow 2.7.3
+    "405de8318b3a",  # Airflow 2.7.0-2.7.3
+    "10b52ebd31f7",  # Airflow 2.8.0
 ]
 
 # initialise logging
@@ -243,7 +247,7 @@ def main(extract: bool, restore: bool):
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser()
+    parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
         "--extract", help="Extracts the current Airflow database to a SQLite file", action="store_true"
     )
