@@ -29,7 +29,7 @@ advised to halt all running jobs and DAG runs.
 
 Database schema must match.
 
-Note that this script is made for Airflow 2.7.x and 2.8.0 and is provided without any warranty.
+Note that this script is made for Airflow 2.7.x, 2.8.0 and 2.8.1 and is provided without any warranty.
 """
 
 from __future__ import annotations
@@ -86,6 +86,7 @@ supported_db_versions = [
     # see https://airflow.apache.org/docs/apache-airflow/stable/migrations-ref.html
     "405de8318b3a",  # Airflow 2.7.0-2.7.3
     "10b52ebd31f7",  # Airflow 2.8.0
+    "88344c1d9134",  # Airflow 2.8.1
 ]
 
 # initialise logging
